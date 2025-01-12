@@ -11,13 +11,15 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
 class NetworkMahasiswaRepository(
-    private val firestore : FirebaseFirestore): MahasiswaRepository {
+    private val firestore : FirebaseFirestore)
+    : MahasiswaRepository
+{
     override suspend fun insertMahasiswa(mahasiswa: Mahasiswa) {
         try {
             firestore.collection("Mahasiswa")
                 .add(mahasiswa).await()
-        }
-        catch (e: Exception){"Gagal menambahkan Mahasiswa: ${e.message}"
+        } catch (e: Exception) {
+            "Gagal menambahkan Mahasiswa: ${e.message}"
         }
     }
 
@@ -45,8 +47,7 @@ class NetworkMahasiswaRepository(
                 .document(mahasiswa.nim)
                 .set(mahasiswa)
                 .await()
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             throw Exception("Error updating Mahasiswa:${e.message}")
         }
     }
@@ -64,7 +65,18 @@ class NetworkMahasiswaRepository(
     }
 
 
-    override suspend fun getMahasiswaByNim(nim: String): Flow<Mahasiswa> {
-        TODO("Not yet implemented")
+    override suspend fun getMahasiswaByNim(nim: String): Flow<Mahasiswa> = callbackFlow {
+        val mhsDoc = firestore.collection("Mahasiswa")
+            .document(nim)
+            .addSnapshotListener { value, error ->
+                if (value != null) {
+                    val mhs = value.toObject(Mahasiswa::class.java)!!
+                    trySend(mhs)
+                }
+            }
+        awaitClose {
+            mhsDoc.remove()
+        }
     }
 }
+
