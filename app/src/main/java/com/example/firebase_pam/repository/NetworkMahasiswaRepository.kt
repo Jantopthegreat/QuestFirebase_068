@@ -8,10 +8,10 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 
 class NetworkMahasiswaRepository(
-    private val firestore : FirebaseFirestore): MahasiswaRepository
-{
+    private val firestore : FirebaseFirestore): MahasiswaRepository {
     override suspend fun insertMahasiswa(mahasiswa: Mahasiswa) {
         TODO("Not yet implemented")
     }
@@ -38,9 +38,18 @@ class NetworkMahasiswaRepository(
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteMahasiswa(nim: String) {
-        TODO("Not yet implemented")
+    override suspend fun deleteMahasiswa(mahasiswa: Mahasiswa) {
+        try {
+            firestore.collection("Mahasiswa")
+                .document(mahasiswa.nim)
+                .delete()
+                .await()
+        } catch (e: Exception) {
+            throw Exception("Error deleting Mahasiswa:${e.message}")
+        }
+
     }
+
 
     override suspend fun getMahasiswaByNim(nim: String): Flow<Mahasiswa> {
         TODO("Not yet implemented")
