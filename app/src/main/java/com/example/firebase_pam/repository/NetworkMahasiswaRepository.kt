@@ -13,7 +13,12 @@ import kotlinx.coroutines.tasks.await
 class NetworkMahasiswaRepository(
     private val firestore : FirebaseFirestore): MahasiswaRepository {
     override suspend fun insertMahasiswa(mahasiswa: Mahasiswa) {
-        TODO("Not yet implemented")
+        try {
+            firestore.collection("Mahasiswa")
+                .add(mahasiswa).await()
+        }
+        catch (e: Exception){"Gagal menambahkan Mahasiswa: ${e.message}"
+        }
     }
 
     override suspend fun getMahasiswa(): Flow<List<Mahasiswa>> = callbackFlow {
