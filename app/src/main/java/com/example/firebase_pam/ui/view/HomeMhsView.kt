@@ -1,5 +1,6 @@
 package com.example.firebase_pam.ui.view
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,6 +43,8 @@ import com.example.firebase_pam.ui.viewmodel.PenyediaViewModel
 fun HomeScreen(
     navigateToItemEntry: () -> Unit,
     modifier: Modifier = Modifier,
+    onDetailClick: (String) -> Unit = {},
+    onEditClick: (String) -> Unit = {},
     viewModel: HomeMhsViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
 
@@ -64,11 +67,14 @@ fun HomeScreen(
         },
     ) { innerPadding ->
         HomeStatus(
-            message = String(),
             homeMhsUiState = viewModel.mhsUiState,
             retryAction = { viewModel.getMahasiswa() },
             modifier = Modifier.padding(innerPadding),
-
+            onDetailClick = onDetailClick,
+            onEditClick = onEditClick,
+            onDeleteClick = {
+                viewModel.deleteMhs(it)
+            }
         )
 
     }
@@ -76,10 +82,12 @@ fun HomeScreen(
 
 @Composable
 fun HomeStatus(
-    message: String,
     homeMhsUiState: HomeMhsUiState,
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
+    onDeleteClick: (Mahasiswa) -> Unit = {},
+    onDetailClick: (String) -> Unit,
+    onEditClick: (String) -> Unit,
 
 ) {
     when (homeMhsUiState) {
@@ -94,7 +102,9 @@ fun HomeStatus(
                 MhsLayout(
                     mahasiswa = homeMhsUiState.mahasiswa,
                     modifier = modifier.fillMaxWidth(),
-
+                    onDetailClick = { onDetailClick(it.nim) },
+                    onEditClick = { onEditClick(it.nim) },
+                    onDeleteClick = { onDeleteClick(it) }
                 )
             }
         }
@@ -134,7 +144,9 @@ fun OnError(
 fun MhsLayout(
     mahasiswa: List<Mahasiswa>,
     modifier: Modifier = Modifier,
-
+    onDeleteClick: (Mahasiswa) -> Unit = {},
+    onDetailClick: (Mahasiswa) -> Unit,
+    onEditClick: (Mahasiswa) -> Unit = {}
 ) {
     LazyColumn(
         modifier = modifier,
@@ -146,8 +158,15 @@ fun MhsLayout(
                 mahasiswa = mahasiswa,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clickable { onDetailClick(mahasiswa) },
+                onDeleteClick = {
+                    onDeleteClick(mahasiswa)
 
-
+                }
+                ,
+                onEditClick = {
+                    onEditClick(mahasiswa)
+                }
             )
         }
     }
