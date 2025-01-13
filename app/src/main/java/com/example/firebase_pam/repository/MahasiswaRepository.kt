@@ -15,5 +15,4 @@ interface MahasiswaRepository{
     suspend fun deleteMahasiswa(mahasiswa: Mahasiswa)
 
     suspend fun getMahasiswaByNim(nim: String): Flow<Mahasiswa>
-
 }
