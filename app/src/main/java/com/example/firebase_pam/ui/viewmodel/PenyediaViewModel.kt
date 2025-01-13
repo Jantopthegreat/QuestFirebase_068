@@ -11,7 +11,9 @@ import com.example.firebase_pam.MahasiswaApp
 object PenyediaViewModel {
     val Factory = viewModelFactory {
         initializer { HomeMhsViewModel(mhsApp().container.mahasiswaRepository) }
-
+        initializer { InsertMhsViewModel(mhsApp().container.mahasiswaRepository) }
+        initializer { DetailMhsViewModel(createSavedStateHandle(),mhsApp().container.mahasiswaRepository) }
+        initializer { EditMhsViewModel(mhsApp().container.mahasiswaRepository) }
     }
 }
 
