@@ -59,8 +59,17 @@ class HomeMhsViewModel(private val mhs: MahasiswaRepository) : ViewModel() {
             }
         }
     }
-
+    fun updateMahasiswa(mahasiswa: Mahasiswa) {
+        viewModelScope.launch {
+            try {
+                mhs.updateMahasiswa(mahasiswa) // Call repository to update the student
+                getMahasiswa() // Reload the updated list
+            } catch (e: Exception) {
+                mhsUiState = HomeMhsUiState.Error(e)
+            }
+        }
     }
+}
 
 
 
