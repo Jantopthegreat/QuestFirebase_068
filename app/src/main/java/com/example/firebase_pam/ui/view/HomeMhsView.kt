@@ -40,20 +40,18 @@ import com.example.firebase_pam.ui.viewmodel.PenyediaViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
+fun HomeMhsView(
     navigateToItemEntry: () -> Unit,
     modifier: Modifier = Modifier,
     onDetailClick: (String) -> Unit = {},
     onEditClick: (String) -> Unit = {},
     viewModel: HomeMhsViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
-
     Scaffold(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = {Text("Home")},
-
+                title = { Text("Home") },
             )
         },
         floatingActionButton = {
@@ -76,7 +74,6 @@ fun HomeScreen(
                 viewModel.deleteMahasiswa(it)
             }
         )
-
     }
 }
 
