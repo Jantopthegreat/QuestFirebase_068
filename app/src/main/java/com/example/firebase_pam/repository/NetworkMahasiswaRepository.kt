@@ -43,40 +43,69 @@ class NetworkMahasiswaRepository(
 
     override suspend fun updateMahasiswa(mahasiswa: Mahasiswa) {
         try {
-            firestore.collection("Mahasiswa")
-                .document(mahasiswa.nim)
-                .set(mahasiswa)
+            // Cari document ID berdasarkan nim
+            val querySnapshot = firestore.collection("Mahasiswa")
+                .whereEqualTo("nim", mahasiswa.nim)
+                .get()
                 .await()
+
+            if (!querySnapshot.isEmpty) {
+                val documentId = querySnapshot.documents[0].id
+                firestore.collection("Mahasiswa")
+                    .document(documentId)
+                    .set(mahasiswa)
+                    .await()
+            } else {
+                throw Exception("Mahasiswa dengan NIM ${mahasiswa.nim} tidak ditemukan.")
+            }
         } catch (e: Exception) {
-            throw Exception("Error updating Mahasiswa:${e.message}")
+            throw Exception("Error updating Mahasiswa: ${e.message}")
         }
     }
 
     override suspend fun deleteMahasiswa(mahasiswa: Mahasiswa) {
         try {
-            firestore.collection("Mahasiswa")
-                .document(mahasiswa.nim)
-                .delete()
+            // Cari document ID berdasarkan nim
+            val querySnapshot = firestore.collection("Mahasiswa")
+                .whereEqualTo("nim", mahasiswa.nim)
+                .get()
                 .await()
-        } catch (e: Exception) {
-            throw Exception("Error deleting Mahasiswa:${e.message}")
-        }
 
+            if (!querySnapshot.isEmpty) {
+                val documentId = querySnapshot.documents[0].id
+                firestore.collection("Mahasiswa")
+                    .document(documentId)
+                    .delete()
+                    .await()
+            } else {
+                throw Exception("Mahasiswa dengan NIM ${mahasiswa.nim} tidak ditemukan.")
+            }
+        } catch (e: Exception) {
+            throw Exception("Error deleting Mahasiswa: ${e.message}")
+        }
     }
+
 
 
     override suspend fun getMahasiswaByNim(nim: String): Flow<Mahasiswa> = callbackFlow {
-        val mhsDoc = firestore.collection("Mahasiswa")
-            .document(nim)
+        val mhsCollection = firestore.collection("Mahasiswa")
+            .whereEqualTo("nim", nim) // Mencari dokumen yang field nim sesuai
             .addSnapshotListener { value, error ->
-                if (value != null) {
-                    val mhs = value.toObject(Mahasiswa::class.java)!!
-                    trySend(mhs)
+                if (error != null) {
+                    close(error) // Tangani kesalahan
+                } else {
+                    value?.documents?.let { documents ->
+                        // Ambil mahasiswa dari dokumen yang ditemukan
+                        val mahasiswa = documents.firstOrNull()?.toObject(Mahasiswa::class.java)
+                        mahasiswa?.let {
+                            trySend(it) // Kirim data mahasiswa
+                        } ?: close(Exception("Mahasiswa tidak ditemukan"))
+                    }
                 }
             }
-        awaitClose {
-            mhsDoc.remove()
-        }
+
+        awaitClose { mhsCollection.remove() } // Hentikan listener saat keluar
     }
+
 }
 
