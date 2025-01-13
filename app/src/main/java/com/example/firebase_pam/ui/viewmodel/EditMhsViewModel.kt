@@ -24,6 +24,7 @@ class EditMhsViewModel(
     val updateUiState: StateFlow<UpdateUiState> = _updateUiState
 
 
+
     fun getMahasiswaByNim(nim: String) {
         viewModelScope.launch {
             repository.getMahasiswaByNim(nim)
