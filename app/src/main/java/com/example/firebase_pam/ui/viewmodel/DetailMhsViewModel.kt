@@ -31,9 +31,8 @@ class DetailMhsViewModel(
     private val mahasiswaRepository: MahasiswaRepository
 ) : ViewModel() {
 
-    private val nim: String = checkNotNull(savedStateHandle["nim"]) // Ambil nim dari savedState
+    private val nim: String = checkNotNull(savedStateHandle["nim"])
 
-    // Menggunakan StateFlow untuk detailMhsUiState
     private val _detailMhsUiState = MutableStateFlow<DetailMhsUiState>(DetailMhsUiState.Loading)
     val detailMhsUiState: StateFlow<DetailMhsUiState> = _detailMhsUiState
 
@@ -43,14 +42,14 @@ class DetailMhsViewModel(
 
     fun getMhsbyNim() {
         viewModelScope.launch {
-            _detailMhsUiState.value = DetailMhsUiState.Loading // Menampilkan loading sebelum data diambil
+            _detailMhsUiState.value = DetailMhsUiState.Loading
 
             mahasiswaRepository.getMahasiswaByNim(nim)
                 .onStart {
-                    // Menunggu data dari Firestore
+
                 }
                 .catch {
-                    // Tangani kesalahan
+
                     _detailMhsUiState.value = DetailMhsUiState.Error
                 }
                 .collect { mahasiswa ->

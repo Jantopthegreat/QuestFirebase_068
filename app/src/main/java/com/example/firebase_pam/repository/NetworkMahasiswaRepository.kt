@@ -43,7 +43,6 @@ class NetworkMahasiswaRepository(
 
     override suspend fun updateMahasiswa(mahasiswa: Mahasiswa) {
         try {
-            // Cari document ID berdasarkan nim
             val querySnapshot = firestore.collection("Mahasiswa")
                 .whereEqualTo("nim", mahasiswa.nim)
                 .get()
@@ -65,7 +64,6 @@ class NetworkMahasiswaRepository(
 
     override suspend fun deleteMahasiswa(mahasiswa: Mahasiswa) {
         try {
-            // Cari document ID berdasarkan nim
             val querySnapshot = firestore.collection("Mahasiswa")
                 .whereEqualTo("nim", mahasiswa.nim)
                 .get()
@@ -89,22 +87,22 @@ class NetworkMahasiswaRepository(
 
     override suspend fun getMahasiswaByNim(nim: String): Flow<Mahasiswa> = callbackFlow {
         val mhsCollection = firestore.collection("Mahasiswa")
-            .whereEqualTo("nim", nim) // Mencari dokumen yang field nim sesuai
+            .whereEqualTo("nim", nim)
             .addSnapshotListener { value, error ->
                 if (error != null) {
-                    close(error) // Tangani kesalahan
+                    close(error)
                 } else {
                     value?.documents?.let { documents ->
-                        // Ambil mahasiswa dari dokumen yang ditemukan
+
                         val mahasiswa = documents.firstOrNull()?.toObject(Mahasiswa::class.java)
                         mahasiswa?.let {
-                            trySend(it) // Kirim data mahasiswa
+                            trySend(it)
                         } ?: close(Exception("Mahasiswa tidak ditemukan"))
                     }
                 }
             }
 
-        awaitClose { mhsCollection.remove() } // Hentikan listener saat keluar
+        awaitClose { mhsCollection.remove() }
     }
 
 }

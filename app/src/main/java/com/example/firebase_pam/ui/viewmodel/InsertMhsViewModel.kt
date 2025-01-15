@@ -31,7 +31,10 @@ class InsertMhsViewModel (
             jeniskelamin = if (event.jeniskelamin.isNotEmpty()) null else "Jenis Kelamin tidak boleh kosong",
             alamat = if (event.alamat.isNotEmpty()) null else "Alamat tidak boleh kosong",
             kelas = if (event.kelas.isNotEmpty()) null else "Kelas tidak boleh kosong",
-            angkatan = if (event.angkatan.isNotEmpty()) null else "Angkatan tidak boleh kosong"
+            angkatan = if (event.angkatan.isNotEmpty()) null else "Angkatan tidak boleh kosong",
+            judulskripsi = if (event.judulskripsi.isNotEmpty()) null else "Judul Skripsi tidak boleh kosong",
+            dosenpembimbing1 = if (event.dosenpembimbing1.isNotEmpty()) null else "Dosen Pembimbing 1 tidak boleh kosong",
+            dosenpembimbing2 = if (event.dosenpembimbing2.isNotEmpty()) null else "Dosen Pembimbing 2 tidak boleh kosong"
         )
         uiEvent = uiEvent.copy(isEntryValid = errorState)
         return errorState.isValid()
@@ -68,7 +71,10 @@ class InsertMhsViewModel (
         jeniskelamin = jeniskelamin,
         alamat = alamat,
         kelas = kelas,
-        angkatan = angkatan
+        angkatan = angkatan,
+        judulskripsi = judulskripsi,
+        dosenpembimbing1 = dosenpembimbing1,
+        dosenpembimbing2 = dosenpembimbing2
     )
 
 
@@ -85,7 +91,10 @@ class InsertMhsViewModel (
         val jeniskelamin: String? = null,
         val alamat: String? = null,
         val kelas: String? = null,
-        val angkatan: String? = null
+        val angkatan: String? = null,
+        val judulskripsi: String? = null,
+        val dosenpembimbing1: String? = null,
+        val dosenpembimbing2: String? = null
     ) {
 
         fun isValid(): Boolean {
@@ -109,5 +118,8 @@ data class InsertMhsUiState(
         val jeniskelamin: String = "",
         val alamat: String = "",
         val kelas: String = "",
-        val angkatan: String = ""
+        val angkatan: String = "",
+        val judulskripsi: String = "",
+        val dosenpembimbing1: String = "",
+        val dosenpembimbing2: String = ""
     )

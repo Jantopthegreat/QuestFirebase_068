@@ -41,7 +41,6 @@ fun DetailMhsView(
     viewModel: DetailMhsViewModel = viewModel(factory = PenyediaViewModel.Factory),
     onBack: () -> Unit = { },
 ) {
-    // Mengambil data mahasiswa berdasarkan nim
     viewModel.getMhsbyNim()
 
     Scaffold(
@@ -120,12 +119,14 @@ fun ItemDetailMhs(
         modifier = modifier
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            containerColor = Color.LightGray,
+            contentColor = Color.Black
         )
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ComponentDetailMhs(judul = "NIM", isinya = mahasiswa.nim)
             Spacer(modifier = Modifier.padding(4.dp))
@@ -138,6 +139,12 @@ fun ItemDetailMhs(
             ComponentDetailMhs(judul = "Kelas", isinya = mahasiswa.kelas)
             Spacer(modifier = Modifier.padding(4.dp))
             ComponentDetailMhs(judul = "Angkatan", isinya = mahasiswa.angkatan)
+            Spacer(modifier = Modifier.padding(4.dp))
+            ComponentDetailMhs(judul = "Judul Skripsi", isinya = mahasiswa.judulskripsi)
+            Spacer(modifier = Modifier.padding(4.dp))
+            ComponentDetailMhs(judul = "Dosen Pembimbing 1", isinya = mahasiswa.dosenpembimbing1)
+            Spacer(modifier = Modifier.padding(4.dp))
+            ComponentDetailMhs(judul = "Dosen Pembimbing 2", isinya = mahasiswa.dosenpembimbing2)
         }
     }
 }

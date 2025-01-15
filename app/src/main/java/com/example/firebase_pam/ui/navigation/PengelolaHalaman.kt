@@ -93,8 +93,7 @@ fun PengelolaHalaman(
                     onUpdateSuccess = {
                         navController.popBackStack()
                     },
-                    onCancel = {
-                        navController.popBackStack()
+                    onBack = {navController.popBackStack()
                     }
                 )
             }
